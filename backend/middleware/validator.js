@@ -50,7 +50,7 @@ exports.validateMovie = [
   check('releaseDate').isDate().withMessage('Release date is missing!'),
   check('genres')
     .isArray()
-    .withMessage('Release date is missing!')
+    .withMessage('Genre is missing!')
     .custom((value) => {
       for (let g of value) {
         if (!genres.includes(g)) {
@@ -64,7 +64,6 @@ exports.validateMovie = [
     .isArray({ min: 1 })
     .withMessage('Tags must be an array of strings')
     .custom((tags) => {
-      console.log(tags);
       for (let t of tags) {
         if (typeof t !== 'string') {
           console.log(typeof t);
@@ -107,10 +106,10 @@ exports.validateMovie = [
         throw Error('Trailer url is invalid');
       }
     }),
-  check('poster').custom((_, { req }) => {
-    if (!req.file) throw Error('Poster File is missing');
-    return true;
-  }),
+  // check('poster').custom((_, { req }) => {
+  //   if (!req.file) throw Error('Poster File is missing');
+  //   return true;
+  // }),
 ];
 
 exports.validate = (req, res, next) => {
