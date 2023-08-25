@@ -2,6 +2,8 @@ const express = require('express');
 const { isAuth, isAdmin } = require('../middleware/auth');
 const { uploadTrailer, createMovie } = require('../controllers/movie');
 const { uploadVideo, uploadImage } = require('../middleware/multer');
+const { parseMovieData } = require('../utils/helper');
+const { validateMovie, validate } = require('../middleware/validator');
 const router = express.Router();
 
 router.post(
@@ -16,6 +18,9 @@ router.post(
   isAuth,
   isAdmin,
   uploadImage.single('poster'),
+  parseMovieData,
+  validateMovie,
+  validate,
   createMovie
 );
 

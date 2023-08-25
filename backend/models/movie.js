@@ -17,7 +17,7 @@ const movieSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Actor',
     },
-    releaseData: {
+    releaseDate: {
       type: Date,
       required: true,
     },
@@ -59,6 +59,7 @@ const movieSchema = mongoose.Schema(
       type: Object,
       url: { type: String, required: true },
       public_id: { type: String, required: true },
+      responsive: [],
       required: true,
     },
     trailer: {
@@ -69,7 +70,7 @@ const movieSchema = mongoose.Schema(
     },
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
     language: {
-      String,
+      type: String,
       required: true,
     },
   },

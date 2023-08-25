@@ -64,8 +64,10 @@ exports.validateMovie = [
     .isArray({ min: 1 })
     .withMessage('Tags must be an array of strings')
     .custom((tags) => {
+      console.log(tags);
       for (let t of tags) {
-        if (!typeof t !== String) {
+        if (typeof t !== 'string') {
+          console.log(typeof t);
           throw Error('Tags must be an array of strings');
         }
       }
@@ -76,17 +78,17 @@ exports.validateMovie = [
     .withMessage('Cast must be an array of strings')
     .custom((casts) => {
       for (let cast of casts) {
-        if (!isValidObjectId(cast.id))
+        if (!isValidObjectId(cast.actor))
           throw Error('Invalid cast id inside cast');
-        if (!cast.role?.trim()) throw Error('Role as is missing inisde cast');
-        if (!typeof cast.leadActor !== Boolean)
+        if (!cast.roleAs?.trim()) throw Error('Role as is missing inisde cast');
+        if (typeof cast.leadActor !== 'boolean')
           throw Error(
             'Only acceped boolean value inside leadActor inside cast'
           );
       }
       return true;
     }),
-  check('trailerInfo')
+  check('trailer')
     .isObject()
     .withMessage('Trailer Info must be an object with url and public id')
     .custom((value) => {
