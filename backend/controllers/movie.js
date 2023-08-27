@@ -245,3 +245,38 @@ exports.updateMovieWitPoster = async (req, res) => {
 
   res.json({ message: 'Movie updated successfully!', movie });
 };
+
+exports.removeMovie = async (req, res) => {
+  const { movieId } = req.params;
+
+  if (!isValidObjectId(movieId)) return sendError(res, 'Invalid Movie Id');
+
+  const movie = await Movie.findById(movieId);
+  if (!movie) return sendError(res, 'Movie not found');
+
+  // Check if there is poster
+
+  // If has poster delete poster from clodinary
+
+  const poster = movie.poster?.public_id;
+  if (poster) {
+    const { result } = await cloudinary.uploader.destroy(poster);
+    if (result !== 'ok') console.log('Could not remove poster from cloud');
+  }
+
+  // removing trailer
+
+  const trailerId = movie.trailer?.public_id;
+  if (!trailerId) return sendError(res, 'Could not find the trailer');
+
+  const { result } = await cloudinary.uploader.destroy(trailerId, {
+    resource_type: 'video',
+  });
+  if (result !== 'ok')
+    return sendError(res, 'Could not remove trailer from cloud');
+
+  // Removing movie
+  await Movie.findByIdAndDelete(movieId);
+
+  res.json({ message: 'Movie removed Successfully' });
+};
