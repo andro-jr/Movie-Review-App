@@ -50,6 +50,27 @@ input[type='number'] {
   }
 }
 
+.custom-scroll-bar::-webkit-scrollbar {
+  width: 3px;
+  height: 4px;
+}
+
+/* Track */
+.custom-scroll-bar::-webkit-scrollbar-track {
+  background: #222222;
+}
+
+/* Handle */
+.custom-scroll-bar::-webkit-scrollbar-thumb {
+  cursor: pointer;
+  background: #dadada;
+}
+
+/* Handle on hover */
+.custom-scroll-bar::-webkit-scrollbar-thumb:hover {
+  background: #bababa;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

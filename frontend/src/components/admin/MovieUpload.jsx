@@ -3,20 +3,17 @@ import { FileUploader } from 'react-drag-drop-files';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { useNotification } from '../../hooks';
 import { uploadTrailer } from '../../api/movie';
+import MovieForm from './MovieForm';
 
 const MovieUpload = () => {
   const [videoSelected, setvideoSelected] = useState(false);
   const [videoUploaded, setvideoUploaded] = useState(false);
   const [uploadProgress, setuploadProgress] = useState(0);
+  const [trailerInfro, setTrailerInfo] = useState({});
 
   const { updateNotification } = useNotification();
 
-  const handleChange = async (file) => {
-    const formData = new FormData();
-    formData.append('video', file);
-
-    console.log('Remove me');
-
+  const handleUploadTrailer = async (formData) => {
     setvideoSelected(true);
     const { url, public_id, error } = await uploadTrailer(
       formData,
@@ -25,12 +22,19 @@ const MovieUpload = () => {
 
     if (error) {
       return updateNotification('error', error);
-    } else {
-      setvideoUploaded(true);
     }
 
-    updateNotification('success', public_id);
+    setvideoUploaded(true);
+    setTrailerInfo({ url, public_id });
+    updateNotification('success', 'Movie uploaded Successfully to cloud!');
+  };
+
+  const handleChange = (file) => {
+    const formData = new FormData();
+    formData.append('video', file);
+
     console.log('hit');
+    handleUploadTrailer(formData);
   };
 
   const handleTypeError = (error) => {
@@ -47,7 +51,7 @@ const MovieUpload = () => {
   return (
     <div className='fixed inset-0 dark:bg-white dark:bg-opacity-50 bg-primary bg-opacity-50 backdrop-blur-sm flex justify-center items-center'>
       <div className='dark:bg-primary bg-white rounded w-[45rem] h-[40rem] overflow-auto p-2'>
-        <ProgressBar
+        {/* <ProgressBar
           visible={!videoUploaded && videoSelected}
           message={getUploadProgressValue()}
           width={uploadProgress}
@@ -56,7 +60,9 @@ const MovieUpload = () => {
           visible={!videoSelected}
           handleChange={handleChange}
           onTypeError={handleTypeError}
-        />
+        /> */}
+
+        <MovieForm />
       </div>
     </div>
   );
