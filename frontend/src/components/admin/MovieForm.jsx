@@ -1,8 +1,7 @@
 import React from 'react';
 import TagsInput from './TagsInput';
-
-const commonInputClasses =
-  'w-full outline-none border-b-2 dark:border-dark-subtle border-light-subtle dark:focus:border-white focus:border-primary transition text-lg bg-transparent dark:text-white text-primary py-1 ';
+import LiveSearch from './LiveSearch';
+import { commonInputClasses } from '../../utils/Theme';
 
 const MovieForm = () => {
   const handleSubmit = (e) => {
@@ -30,11 +29,10 @@ const MovieForm = () => {
           ></textarea>
         </div>
         <div>
-          <p className='dark:text-dark-subtle text-light-subtle font-semibold mb-2'>
-            Tags
-          </p>
-          <TagsInput />
+          <Label htmlFor='tags'>Tags</Label>
+          <TagsInput name='tags' />
         </div>
+        <LiveSearch />
       </div>
       <div className='w-[30%] h-5'></div>
     </form>
