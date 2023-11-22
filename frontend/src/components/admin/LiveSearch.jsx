@@ -1,161 +1,147 @@
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
-import { commonInputClasses } from '../../utils/Theme';
+import React, { useEffect, useRef, useState, forwardRef } from "react";
+import { commonInputClasses } from "../../utils/Theme";
 
-export const results = [
-  {
-    id: '1',
-    avatar:
-      'https://images.unsplash.com/photo-1643713303351-01f540054fd7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-    name: 'John Doe',
-  },
-  {
-    id: '2',
-    avatar:
-      'https://images.unsplash.com/photo-1643883135036-98ec2d9e50a1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-    name: 'Chandri Anggara',
-  },
-  {
-    id: '3',
-    avatar:
-      'https://images.unsplash.com/photo-1578342976795-062a1b744f37?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-    name: 'Amin RK',
-  },
-  {
-    id: '4',
-    avatar:
-      'https://images.unsplash.com/photo-1564227901-6b1d20bebe9d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-    name: 'Edward Howell',
-  },
-  {
-    id: '5',
-    avatar:
-      'https://images.unsplash.com/photo-1578342976795-062a1b744f37?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-    name: 'Amin RK',
-  },
-  {
-    id: '6',
-    avatar:
-      'https://images.unsplash.com/photo-1564227901-6b1d20bebe9d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80',
-    name: 'Edward Howell',
-  },
-];
-
-const LiveSearch = () => {
-  const [displaySearch, setDisplaySearch] = useState();
+export default function LiveSearch({
+  name,
+  value = "",
+  placeholder = "",
+  results = [],
+  resultContainerStyle,
+  selectedResultStyle,
+  inputStyle,
+  renderItem = null,
+  onChange = null,
+  onSelect = null,
+}) {
+  const [displaySearch, setDisplaySearch] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
-  console.log(
-    '🚀 ~ file: LiveSearch.jsx:46 ~ LiveSearch ~ focusedIndex:',
-    focusedIndex
-  );
 
   const handleOnFocus = () => {
     if (results.length) setDisplaySearch(true);
   };
 
-  const handleOnBlur = () => {
-    if (results.length) setDisplaySearch(false);
+  const closeSearch = () => {
+    setDisplaySearch(false);
     setFocusedIndex(-1);
   };
 
+  const handleOnBlur = () => {
+    closeSearch();
+  };
+
   const handleSelection = (selectedItem) => {
-    console.log(
-      '🚀 ~ file: LiveSearch.jsx:61 ~ LiveSearch ~ selectedItem:',
-      selectedItem
-    );
+    if (selectedItem) {
+      onSelect(selectedItem);
+      closeSearch();
+    }
   };
 
   const handleKeyDown = ({ key }) => {
     let nextCount;
-
-    const keys = ['ArrowDown', 'ArrowUp', 'Enter', 'Escape'];
+    const keys = ["ArrowDown", "ArrowUp", "Enter", "Escape"];
     if (!keys.includes(key)) return;
 
-    //movie selection up and down
-    if (key === 'ArrowDown') {
-      focusedIndex === results.length - 1
-        ? (nextCount = 0)
-        : (nextCount = focusedIndex + 1);
+    // move selection up and down
+    if (key === "ArrowDown") {
+      nextCount = (focusedIndex + 1) % results.length;
+    }
+    if (key === "ArrowUp") {
+      nextCount = (focusedIndex + results.length - 1) % results.length;
     }
 
-    if (key === 'ArrowUp') {
-      if (focusedIndex === -1) return;
-      nextCount = focusedIndex - 1;
-    }
+    if (key === "Escape") return closeSearch();
 
-    if (key === 'Enter') {
-      return handleSelection(results[focusedIndex]);
-    }
+    if (key === "Enter") return handleSelection(results[focusedIndex]);
 
     setFocusedIndex(nextCount);
   };
 
+  const getInputStyle = () => {
+    return inputStyle
+      ? inputStyle
+      : commonInputClasses + " border-2 rounded p-1 text-lg";
+  };
+
   return (
-    <div className='relative'>
+    <div
+      tabIndex={1}
+      onKeyDown={handleKeyDown}
+      onBlur={handleOnBlur}
+      className='relative outline-none'
+    >
       <input
+        id={name}
+        name={name}
         type='text'
-        className={commonInputClasses + 'rounded border-2 p-1 text-lg'}
-        placeholder='Search Profile'
+        className={getInputStyle()}
+        placeholder={placeholder}
         onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
-        onKeyDown={handleKeyDown}
+        value={value}
+        onChange={onChange}
+        // onBlur={handleOnBlur}
+        // onKeyDown={handleKeyDown}
       />
       <SearchResults
-        visible={displaySearch}
         results={results}
+        visible={displaySearch}
         focusedIndex={focusedIndex}
-        handleSelection={handleSelection}
+        onSelect={handleSelection}
         renderItem={renderItem}
+        resultContainerStyle={resultContainerStyle}
+        selectedResultStyle={selectedResultStyle}
       />
     </div>
   );
-};
+}
 
-const renderItem = ({ id, name, avatar }) => {
-  <div className='flex'>
-    <img src={avatar} alt='' />
-    <p>{name}</p>
-  </div>;
-};
+// const renderItem = ({ id, name, avatar }) => {
+//   return (
+//     <div className="flex">
+//       <img src={avatar} alt="" />
+//       <p>{name}</p>
+//     </div>
+//   );
+// };
 
 const SearchResults = ({
-  results = [],
   visible,
+  results = [],
   focusedIndex,
-  handleSelection,
+  onSelect,
   renderItem,
-  resultCotainerStyle,
+  resultContainerStyle,
   selectedResultStyle,
 }) => {
   const resultContainer = useRef();
 
   useEffect(() => {
+    // console.log(resultContainer.current);
     resultContainer.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
+      behavior: "smooth",
+      block: "center",
     });
   }, [focusedIndex]);
 
   if (!visible) return null;
 
-  const getSelectedClass = () => {
-    return selectedResultStyle
-      ? selectedResultStyle
-      : 'dark:bg-dark-subtle bg-light-subtle';
-  };
-
   return (
-    <div className='absolute right-0 left-0 top-10 bg-white dark:bg-secondary shadow-md p-2 max-h-64 space-y-2 overflow-auto mt-1 custom-scroll-bar'>
-      {results.map((result, i) => {
-        const { id, name, avatar } = result;
+    <div className='absolute z-50 right-0 left-0 top-10 bg-white dark:bg-secondary shadow-md p-2 max-h-64 space-y-2 mt-1 overflow-auto custom-scroll-bar'>
+      {results.map((result, index) => {
+        const getSelectedClass = () => {
+          return selectedResultStyle
+            ? selectedResultStyle
+            : "dark:bg-dark-subtle bg-light-subtle";
+        };
         return (
           <ResultCard
-            ref={i === focusedIndex ? resultContainer : null}
-            key={id}
+            key={index.toString()}
             item={result}
             renderItem={renderItem}
-            resultCotainerStyle={resultCotainerStyle}
-            selectedResultStyle={i === focusedIndex ? getSelectedClass() : ''}
-            onClick={() => handleSelection(result)}
+            resultContainerStyle={resultContainerStyle}
+            selectedResultStyle={
+              index === focusedIndex ? getSelectedClass() : ""
+            }
+            onMouseDown={() => onSelect(result)}
           />
         );
       })}
@@ -163,28 +149,26 @@ const SearchResults = ({
   );
 };
 
-export default LiveSearch;
-
 const ResultCard = forwardRef((props, ref) => {
   const {
     item,
     renderItem,
-    resultCotainerStyle,
+    resultContainerStyle,
     selectedResultStyle,
-    onClick,
+    onMouseDown,
   } = props;
 
   const getClasses = () => {
-    if (resultCotainerStyle)
-      return resultCotainerStyle + ' ' + selectedResultStyle;
+    if (resultContainerStyle)
+      return resultContainerStyle + " " + selectedResultStyle;
 
     return (
       selectedResultStyle +
-      'cursor-pointer rounded overflow-hidden dark:hover:bg-dark-subtle hover:bg-light-subtle transition'
+      " cursor-pointer rounded overflow-hidden dark:hover:bg-dark-subtle hover:bg-light-subtle transition"
     );
   };
   return (
-    <div onClick={onClick} ref={ref} className={getClasses()}>
+    <div onMouseDown={onMouseDown} ref={ref} className={getClasses()}>
       {renderItem(item)}
     </div>
   );

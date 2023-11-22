@@ -1,31 +1,33 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { AiOutlineClose } from 'react-icons/ai';
+import React, { useEffect, useRef, useState } from "react";
+import { AiOutlineClose } from "react-icons/ai";
 
-const TagsInput = () => {
-  const [tag, setTag] = useState('');
+const TagsInput = ({ name, onChange }) => {
+  const [tag, setTag] = useState("");
   const [tags, setTags] = useState([]);
 
   const input = useRef();
   const tagsInputs = useRef();
 
-  const handleOnchange = ({ target }) => {
+  const handleOnChange = ({ target }) => {
     const { value } = target;
-    if (value !== ',') {
+    if (value !== ",") {
       setTag(value);
     }
+
+    onChange(tags);
   };
 
   const handleKeyDown = ({ key }) => {
-    if (key === ',' || key === 'Enter') {
+    if (key === "," || key === "Enter") {
       if (!tag) return;
 
-      if (tags.includes(tag)) return setTag('');
+      if (tags.includes(tag)) return setTag("");
 
       setTags([...tags, tag]);
-      setTag('');
+      setTag("");
     }
 
-    if (key === 'Backspace' && !tag && tags.length) {
+    if (key === "Backspace" && !tag && tags.length) {
       tags.pop();
       setTags([...tags]);
     }
@@ -39,22 +41,26 @@ const TagsInput = () => {
 
   const handleOnFocus = () => {
     tagsInputs.current.classList.remove(
-      'dark:border-dark-subtle',
-      'border-light-subtle'
+      "dark:border-dark-subtle",
+      "border-light-subtle"
     );
-    tagsInputs.current.classList.add('dark:border-white', 'border-primary');
+    tagsInputs.current.classList.add("dark:border-white", "border-primary");
   };
   const handleOnBlur = () => {
     tagsInputs.current.classList.add(
-      'dark:border-dark-subtle',
-      'border-light-subtle'
+      "dark:border-dark-subtle",
+      "border-light-subtle"
     );
-    tagsInputs.current.classList.remove('dark:border-white', 'border-primary');
+    tagsInputs.current.classList.remove("dark:border-white", "border-primary");
   };
 
   useEffect(() => {
     input.current.scrollIntoView();
   }, [tag]);
+
+  useEffect(() => {
+    onChange(tags);
+  }, [tags]);
 
   return (
     <div>
@@ -71,10 +77,11 @@ const TagsInput = () => {
         <input
           ref={input}
           type='text'
+          id={name}
           className='h-full flex-grow bg-transparent outline-none dark:text-white text-primary'
           placeholder='Tag one, tag two'
           value={tag}
-          onChange={handleOnchange}
+          onChange={handleOnChange}
           onFocus={handleOnFocus}
           onBlur={handleOnBlur}
         />

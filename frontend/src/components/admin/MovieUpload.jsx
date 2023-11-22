@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { FileUploader } from 'react-drag-drop-files';
-import { AiOutlineCloudUpload } from 'react-icons/ai';
-import { useNotification } from '../../hooks';
-import { uploadTrailer } from '../../api/movie';
-import MovieForm from './MovieForm';
+import React, { useState } from "react";
+import { FileUploader } from "react-drag-drop-files";
+import { AiOutlineCloudUpload } from "react-icons/ai";
+import { useNotification } from "../../hooks";
+import { uploadTrailer } from "../../api/movie";
+import MovieForm from "./MovieForm";
 
 const MovieUpload = () => {
   const [videoSelected, setvideoSelected] = useState(false);
@@ -21,36 +21,36 @@ const MovieUpload = () => {
     );
 
     if (error) {
-      return updateNotification('error', error);
+      return updateNotification("error", error);
     }
 
     setvideoUploaded(true);
     setTrailerInfo({ url, public_id });
-    updateNotification('success', 'Movie uploaded Successfully to cloud!');
+    updateNotification("success", "Movie uploaded Successfully to cloud!");
   };
 
   const handleChange = (file) => {
     const formData = new FormData();
-    formData.append('video', file);
+    formData.append("video", file);
 
-    console.log('hit');
+    console.log("hit");
     handleUploadTrailer(formData);
   };
 
   const handleTypeError = (error) => {
-    updateNotification('error', error);
+    updateNotification("error", error);
   };
 
   const getUploadProgressValue = () => {
     if (!videoUploaded && uploadProgress >= 100) {
-      return 'Processing !';
+      return "Processing !";
     }
     return `Upload Progress: ${uploadProgress}`;
   };
 
   return (
     <div className='fixed inset-0 dark:bg-white dark:bg-opacity-50 bg-primary bg-opacity-50 backdrop-blur-sm flex justify-center items-center'>
-      <div className='dark:bg-primary bg-white rounded w-[45rem] h-[40rem] overflow-auto p-2'>
+      <div className='dark:bg-primary bg-white rounded w-[45rem] h-[40rem] overflow-auto p-2 custom-scroll-bar'>
         {/* <ProgressBar
           visible={!videoUploaded && videoSelected}
           message={getUploadProgressValue()}
@@ -76,7 +76,7 @@ const TrailerSelector = ({ visible, handleChange, onTypeError }) => {
       <FileUploader
         handleChange={handleChange}
         name='file'
-        types={['mp4', 'avi']}
+        types={["mp4", "avi"]}
         onTypeError={onTypeError}
       >
         <div className='w-56 h-56 border border-dashed dark:border-dark-subtle border-light-subtle rounded-full flex justify-center items-center flex-col dark:text-dark-subtle text-light-subtle cursor-pointer'>
@@ -95,7 +95,7 @@ const ProgressBar = ({ message, width, visible }) => {
     <div className='dark:bg-secondary bg-white drop-shadow-lg rounded p-3'>
       <div className='relative h-3 dark:bg-dark-subtle bg-light-subtle overflow-hidden'>
         <div
-          style={{ width: width + '%' }}
+          style={{ width: width + "%" }}
           className='h-full absolute left-0 dark:bg-white bg-secondary'
         />
       </div>
